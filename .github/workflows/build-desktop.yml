@@ -1,17 +1,17 @@
 name: Build Desktop App
 on:
   push:
-    branches: [ main ] # Sesuaikan dengan nama branch utama Akang
+    branches: [ main ]
 
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4 # Diperbarui ke v4
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4 # Diperbarui ke v4
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'zulu'
@@ -20,7 +20,22 @@ jobs:
         run: ./gradlew packageExe
 
       - name: Upload EXE Artifact
-        uses: actions/upload-artifact@v4 # INI YANG WAJIB DIUBAH KE V4
+        uses: actions/upload-artifact@v4
+        if: success() # Hanya upload jika build berhasil
         with:
           name: HDM-POS-Windows
           path: composeApp/build/compose/binaries/main/exe/
+
+      # TAMBAHKAN STEP INI DI PALING BAWAH
+      - name: Print jpackage error log on failure
+        if: failure() # Perintah ini hanya jalan jika build di atasnya gagal
+        run: |
+          if (Test-Path composeApp/build/compose/logs/packageExe/) {
+              Get-ChildItem -Path composeApp/build/compose/logs/packageExe/ -Filter *.txt | ForEach-Object {
+                  Write-Host "=== Menampilkan Isi File: $_ ==="
+                  Get-Content $_.FullName
+              }
+          } else {
+              Write-Host "Folder log tidak ditemukan."
+          }
+        shell: pwsh
