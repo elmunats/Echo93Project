@@ -1,17 +1,17 @@
 name: Build Desktop App
 on:
   push:
-    branches: [ main ] # Ganti sesuai nama branch utama Akang
+    branches: [ main ] # Sesuaikan dengan nama branch utama Akang
 
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Diperbarui ke v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4 # Diperbarui ke v4
         with:
           java-version: '17'
           distribution: 'zulu'
@@ -20,7 +20,7 @@ jobs:
         run: ./gradlew packageExe
 
       - name: Upload EXE Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # INI YANG WAJIB DIUBAH KE V4
         with:
           name: HDM-POS-Windows
           path: composeApp/build/compose/binaries/main/exe/
