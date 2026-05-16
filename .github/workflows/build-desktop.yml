@@ -1,0 +1,26 @@
+name: Build Desktop App
+on:
+  push:
+    branches: [ main ] # Ganti sesuai nama branch utama Akang
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: Build EXE Package
+        run: ./gradlew packageExe
+
+      - name: Upload EXE Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: HDM-POS-Windows
+          path: composeApp/build/compose/binaries/main/exe/
